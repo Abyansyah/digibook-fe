@@ -1,6 +1,6 @@
 'use client';
 
-import { Menu, X, ChevronDown, ChevronUp } from 'lucide-react';
+import { Menu, X, ChevronDown, ChevronUp, LogOut, LayoutDashboard } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import DigiBook from '@/public/images/digibook.svg';
@@ -12,6 +12,8 @@ import { MenuTypes } from '@/types/menu';
 import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { NavbarProps } from '@/types/navbar';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuLabel, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
+import { useAuthStore } from '@/store/authStore';
 
 const Navbar: React.FC<NavbarProps> = ({ className }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -20,6 +22,13 @@ const Navbar: React.FC<NavbarProps> = ({ className }) => {
 
   const toggleDropdown = (name: string) => {
     setOpenDropdown(openDropdown === name ? null : name);
+  };
+
+  const { token, logout } = useAuthStore();
+
+  const handleLogout = async () => {
+    await logout();
+    push('/');
   };
 
   return (
@@ -59,10 +68,36 @@ const Navbar: React.FC<NavbarProps> = ({ className }) => {
             ))}
           </ul>
           <div className="hidden md:flex items-center gap-2">
-            <Button onClick={() => push('/register')} variant="ghost" className="px-2 hover:bg-blue-200 text-primary hover:text-primary">
-              Daftar
-            </Button>
-            <Button onClick={() => push('/login')}>Masuk</Button>
+            {token ? (
+              <>
+                <DropdownMenu>
+                  <DropdownMenuTrigger>
+                    <Avatar>
+                      <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+                      <AvatarFallback>CN</AvatarFallback>
+                    </Avatar>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuLabel>Budi Seti</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem>
+                      <LayoutDashboard /> <span>Dashboard</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={handleLogout} className="text-red-500 focus:bg-red-500 focus:text-white cursor-pointer">
+                      <LogOut />
+                      <span>Log out</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </>
+            ) : (
+              <>
+                <Button onClick={() => push('/register')} variant="ghost" className="px-2 hover:bg-blue-200 text-primary hover:text-primary">
+                  Daftar
+                </Button>
+                <Button onClick={() => push('/login')}>Masuk</Button>
+              </>
+            )}
           </div>
           <Button variant="outline" size="icon" className="md:hidden" onClick={() => setIsOpen(!isOpen)}>
             {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}

@@ -42,7 +42,7 @@ export default function NewsSection() {
         {articles.map((article) => (
           <article key={article.id} className="flex flex-col bg-white rounded-lg shadow-sm overflow-hidden">
             <div className="relative h-48 sm:h-56">
-              <Image src={article.image} alt={article.title} fill className="object-cover" />
+              <Image src={article.image} alt={article.title} fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" className="object-cover" />
             </div>
 
             <div className="flex-1 p-6">

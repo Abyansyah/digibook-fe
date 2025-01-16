@@ -48,7 +48,7 @@ export default function EventSection() {
             {events.map((event) => (
               <Card key={event.id} className="bg-white overflow-hidden">
                 <div className="relative h-48">
-                  <Image src={event.image} alt={event.title} fill className="object-cover" />
+                  <Image src={event.image} alt={event.title} fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" className="object-cover" />
                 </div>
                 <CardContent className="p-6">
                   <div className="space-y-4">
