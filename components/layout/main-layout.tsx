@@ -4,13 +4,13 @@ import React, { useEffect } from 'react';
 import Navbar from './navbar';
 import Footer from './footer';
 import { usePathname } from 'next/navigation';
-import { hiddenPaths } from '@/constant/hiddenPaths';
 import { useAuthStore } from '@/store/authStore';
 import { Toaster } from 'sonner';
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const isNoLayout = hiddenPaths.includes(pathname);
+
+  const isNoLayout = ['/login', '/register', '/404'].includes(pathname) || pathname.startsWith('/reading/');
 
   const { token, fetchUser } = useAuthStore();
 

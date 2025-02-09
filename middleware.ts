@@ -1,20 +1,37 @@
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+import { NextResponse, type NextRequest } from 'next/server';
+
+const PROTECTED_ROUTES = ['/dashboard', '/reading'];
+const AUTH_ROUTES = ['/login', '/register'];
+const DEFAULT_REDIRECT_URL = '/';
+
+const getAuthToken = (request: NextRequest) => request.cookies.get('authToken')?.value;
+
+const isMatchingRoute = (pathname: string, routes: string[]) => {
+  return routes.some((route) => pathname === route || pathname.startsWith(`${route}/`));
+};
 
 export function middleware(request: NextRequest) {
-  const token = request.cookies.get('authToken');
+  const { pathname } = request.nextUrl;
+  const token = getAuthToken(request);
 
-  if (request.nextUrl.pathname.startsWith('/dashboard') && !token) {
-    return NextResponse.redirect(new URL('/login', request.url));
+  if (isMatchingRoute(pathname, PROTECTED_ROUTES)) {
+    if (!token) {
+      const url = request.nextUrl.clone();
+      url.pathname = '/login';
+      return NextResponse.redirect(url);
+    }
+    return NextResponse.next();
   }
 
-  if ((request.nextUrl.pathname === '/login' || request.nextUrl.pathname === '/register') && token) {
-    return NextResponse.redirect(new URL('/', request.url));
+  if (isMatchingRoute(pathname, AUTH_ROUTES) && token) {
+    const url = request.nextUrl.clone();
+    url.pathname = DEFAULT_REDIRECT_URL;
+    return NextResponse.redirect(url);
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ['/dashboard/:path*', '/login', '/register'],
+  matcher: [...PROTECTED_ROUTES.map((p) => `${p}/:path*`), ...AUTH_ROUTES],
 };

@@ -8,4 +8,11 @@ export interface User {
   created_at: string;
   updated_at: string;
 }
-  
+
+export interface UserForm {
+  name: string;
+  nomor_whatsapp: string;
+  tanggal_lahir: string;
+  jenis_kelamin: string;
+  biografi: string;
+}

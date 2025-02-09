@@ -7,12 +7,14 @@ import { Label } from '@/components/ui/label';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState } from 'react';
-import { EyeIcon, EyeOffIcon } from 'lucide-react';
+import { EyeIcon, EyeOffIcon, AlertCircle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/authStore';
 import { loginApi } from '@/services/authApi';
 import Cookies from 'js-cookie';
 import { toast } from 'sonner';
+import { AxiosError } from 'axios';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRef<'div'>) {
   const [email, setEmail] = useState<string>('');
@@ -33,9 +35,9 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
       Cookies.set('authToken', data.access_token);
       router.push('/');
     } catch (err) {
-      const error = err instanceof Error ? err : new Error('Terjadi kesalahan tidak diketahui');
-      setError(error.message);
-      toast.error(error.message);
+      if (err instanceof AxiosError) {
+        toast.error(err.response?.data?.error);
+      }
     } finally {
       setLoading(false);
     }
@@ -56,7 +58,13 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
             <p className="text-center text-sm text-slate-500">Yuk, gabung untuk meningkatkan literasimu di DigiBook.</p>
           </div>
           <div className="flex flex-col gap-6">
-            {error && <p className="text-sm text-red-500">{error}</p>}
+            {error && (
+              <Alert variant="destructive">
+                <AlertCircle className="h-4 w-4" />
+                <AlertTitle>Error</AlertTitle>
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
             <div className="grid gap-4">
               <Label htmlFor="email">Email</Label>
               <Input id="email" type="email" placeholder="m@example.com" required value={email} onChange={(e) => setEmail(e.target.value)} />

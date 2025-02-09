@@ -11,6 +11,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/authStore';
 import { registerApi } from '@/services/authApi';
+import { toast } from 'sonner';
 
 export function RegisterForm({ className, ...props }: React.ComponentPropsWithoutRef<'div'>) {
   const [showPassword, setShowPassword] = useState(false);
@@ -54,7 +55,8 @@ export function RegisterForm({ className, ...props }: React.ComponentPropsWithou
       setToken(data.token);
       router.push('/login');
       setLoading(false);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      toast.success('Registrasi berhasil. Silahkan login.');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setErrors({ general: err.response?.data?.error || 'Registrasi gagal. Coba lagi.' });
       setLoading(false);

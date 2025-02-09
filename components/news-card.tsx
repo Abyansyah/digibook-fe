@@ -8,13 +8,14 @@ interface NewsCardProps {
   category: string;
   date: string;
   imageUrl: string;
+  authors: string;
 }
 
-export function NewsCard({ title, excerpt, category, date, imageUrl }: NewsCardProps) {
+export function NewsCard({ title, excerpt, category, date, imageUrl, authors }: NewsCardProps) {
   return (
     <Card className="overflow-hidden flex flex-col h-full">
       <div className="relative h-48 w-full">
-        <Image src={imageUrl} alt={title} fill className="object-cover" />
+        <Image src={imageUrl} alt={title} fill onLoad={() => console.log('Image loaded')} className="object-cover" />
         <Badge className="absolute top-2 left-2 bg-primary text-primary-foreground">{category}</Badge>
       </div>
       <CardHeader>
@@ -23,7 +24,9 @@ export function NewsCard({ title, excerpt, category, date, imageUrl }: NewsCardP
       <CardContent>
         <p className="text-muted-foreground line-clamp-3">{excerpt}</p>
       </CardContent>
-      <CardFooter className="text-sm text-muted-foreground mt-auto">{date}</CardFooter>
+      <CardFooter className="text-sm text-muted-foreground mt-auto">
+        {authors} - {date}
+      </CardFooter>
     </Card>
   );
 }

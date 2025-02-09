@@ -1,4 +1,4 @@
-import { SidebarProps } from '@/types/sidebat';
+import { SidebarProps } from '@/types/sidebar';
 import { Bell, Book, Bookmark, Home, User } from 'lucide-react';
 
 export const SidebarNavigation: SidebarProps[] = [
@@ -7,11 +7,7 @@ export const SidebarNavigation: SidebarProps[] = [
     href: '/dashboard',
     icon: Home,
   },
-  {
-    label: 'Profile',
-    href: '/dashboard/profile',
-    icon: User,
-  },
+
   {
     label: 'Event',
     href: '/dashboard/event',
@@ -26,5 +22,10 @@ export const SidebarNavigation: SidebarProps[] = [
     label: 'Buku Favorit',
     href: '/dashboard/buku-favorit',
     icon: Bookmark,
+  },
+  {
+    label: 'Profile',
+    href: '/dashboard/profile',
+    icon: User,
   },
 ];

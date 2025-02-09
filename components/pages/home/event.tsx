@@ -1,34 +1,20 @@
+'use client';
+
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { ChevronRight } from 'lucide-react';
+import SkeletonCard from '@/components/loading-card';
+import useSWR from 'swr';
+import { useRouter } from 'next/navigation';
+import { fetcher } from '@/services/authClient';
 
-const events = [
-  {
-    id: 1,
-    type: 'Lomba',
-    title: 'Kompetisi Literasi & Numerasi',
-    image: 'https://images.unsplash.com/photo-1563050860-87d45eaaeabb?q=80&w=2072&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    price: 'Gratis',
-    startDate: '28 Januari 2024',
-    endDate: '14 Februari 2024',
-    participants: 120,
-    participantsText: 'Peserta telah terdaftar',
-  },
-  {
-    id: 2,
-    type: 'Workshop',
-    title: 'Workshop Menulis Kreatif',
-    image: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    price: 'Gratis',
-    startDate: '28 Januari 2024',
-    endDate: '14 Februari 2024',
-    participants: 300,
-    participantsText: 'Peserta telah terdaftar',
-  },
-];
+const BASE_URL = process.env.NEXT_PUBLIC_ENV_LOCAL_VARIABLE;
 
 export default function EventSection() {
+  const { data, isLoading } = useSWR(`${BASE_URL}/events?per_page=2`, fetcher);
+  const { push } = useRouter();
+
   return (
     <section className=" py-16">
       <div className="max-w-7xl mx-auto px-4">
@@ -45,41 +31,50 @@ export default function EventSection() {
           </div>
 
           <div className="grid md:grid-cols-2 gap-6">
-            {events.map((event) => (
-              <Card key={event.id} className="bg-white overflow-hidden">
-                <div className="relative h-48">
-                  <Image src={event.image} alt={event.title} fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" className="object-cover" />
-                </div>
-                <CardContent className="p-6">
-                  <div className="space-y-4">
-                    <div>
-                      <div className="text-blue-600 font-medium mb-2">{event.type}</div>
-                      <h3 className="text-xl font-bold text-gray-900">{event.title}</h3>
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <span className="text-blue-600 font-medium">{event.price}</span>
-                    </div>
-
-                    <div className="space-y-2">
-                      <div className="flex items-center text-gray-600">
-                        <span>
-                          {event.startDate} - {event.endDate}
-                        </span>
-                      </div>
-                      <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                        <div className="h-full bg-blue-600 rounded-full" style={{ width: `${(event.participants / 500) * 100}%` }} />
-                      </div>
-                      <div className="text-sm text-gray-600">
-                        {event.participants} {event.participantsText}
-                      </div>
-                    </div>
-
-                    <Button className="w-full">Daftar</Button>
+            {isLoading ? (
+              <>
+                {Array.from({ length: 2 }).map((_, i) => (
+                  <SkeletonCard key={i} />
+                ))}
+              </>
+            ) : (
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              data?.data?.list?.map((event?: any) => (
+                <Card key={event.id} className="bg-white overflow-hidden">
+                  <div className="relative h-48">
+                    <Image src={event.imageUrl} alt={event.title} fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" className="object-cover" />
                   </div>
-                </CardContent>
-              </Card>
-            ))}
+                  <CardContent className="p-6">
+                    <div className="space-y-4">
+                      <div>
+                        <div className="text-blue-600 font-medium mb-2">{event.category}</div>
+                        <h3 className="text-xl font-bold text-gray-900 line-clamp-1">{event.title}</h3>
+                      </div>
+
+                      {/* <div className="flex items-center justify-between">
+                        <span className="text-blue-600 font-medium">{event.price}</span>
+                      </div> */}
+
+                      <div className="space-y-2">
+                        <div className="flex items-center text-gray-600">
+                          <span>
+                            {event.start_time} - {event.end_time}
+                          </span>
+                        </div>
+                        <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                          <div className="h-full bg-blue-600 rounded-full" style={{ width: `${(event.registeredCount / event.participants_count) * 100}%` }} />
+                        </div>
+                        <div className="text-sm text-gray-600">{event.participants} Peserta telah terdaftar</div>
+                      </div>
+
+                      <Button onClick={() => push(`/event/${event.slug}`)} className="w-full">
+                        Daftar
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))
+            )}
           </div>
         </div>
       </div>

@@ -2,7 +2,7 @@ import axios from 'axios';
 import { useAuthStore } from '@/store/authStore';
 import Cookies from 'js-cookie';
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api/v1';
+export const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api/v1';
 
 const authClient = axios.create({
   baseURL: BASE_URL,
@@ -37,5 +37,22 @@ authClient.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+export const fetcher = async (url: string) => {
+  try {
+    const response = await authClient.get(url);
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      const err = new Error('An error occurred while fetching the data.');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (err as any).info = error.response?.data;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (err as any).status = error.response?.status;
+      throw err;
+    }
+    throw error;
+  }
+};
 
 export default authClient;

@@ -1,0 +1,46 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.pdf-book {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+  max-width: 100%;
+  touch-action: none;
+}
+
+.pdf-flipbook {
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  display: none;
+}
+
+.pdf-flipbook.react-pageflip {
+  display: block;
+}
+
+.pdf-page {
+  background-color: white;
+  border-radius: 0;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+}
+
+.pdf-page canvas {
+  max-width: 100%;
+  height: auto !important;
+}
+
+/* Make sure the PDF pages are contained within the viewport */
+@media screen and (max-width: 768px) {
+  .pdf-book {
+    transform: scale(0.8);
+    transform-origin: center center;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .pdf-book {
+    transform: scale(0.6);
+  }
+}

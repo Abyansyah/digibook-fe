@@ -18,13 +18,14 @@ import { useAuthStore } from '@/store/authStore';
 const Navbar: React.FC<NavbarProps> = ({ className }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  // const [imageLoading, setImageLoading] = useState<boolean>(false);
   const { push } = useRouter();
 
   const toggleDropdown = (name: string) => {
     setOpenDropdown(openDropdown === name ? null : name);
   };
 
-  const { token, logout } = useAuthStore();
+  const { token, logout, user } = useAuthStore();
 
   const handleLogout = async () => {
     await logout();
@@ -78,9 +79,9 @@ const Navbar: React.FC<NavbarProps> = ({ className }) => {
                     </Avatar>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent>
-                    <DropdownMenuLabel>Budi Seti</DropdownMenuLabel>
+                    <DropdownMenuLabel>{user?.name}</DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => push('/dashboard')}>
                       <LayoutDashboard /> <span>Dashboard</span>
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={handleLogout} className="text-red-500 focus:bg-red-500 focus:text-white cursor-pointer">

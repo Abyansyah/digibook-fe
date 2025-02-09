@@ -14,7 +14,7 @@ export interface Book {
   title: string;
   author: string;
   genre: string;
-  price: string | number;
+  price: string;
   coverUrl: string;
 }
 
