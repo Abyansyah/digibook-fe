@@ -29,7 +29,14 @@ export default function NewsDetailPage({ params }: NewsDetailPageProps) {
 
   const content = useMemo(() => {
     if (loadingDetail) {
-      return <p className="text-muted-foreground">Memuat detail berita...</p>;
+      return (
+        <div className="w-full h-screen flex justify-center items-center">
+          <div className="flex flex-col justify-center items-center">
+            <iframe src="https://lottie.host/embed/0d53fecd-f5f5-4f67-a651-b33f93d434cc/pT97OQp5TH.lottie"></iframe>
+            <p className="text-xl">Memuat berita...</p>
+          </div>
+        </div>
+      );
     }
 
     if (!newsDetail) {

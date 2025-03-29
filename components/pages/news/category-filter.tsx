@@ -3,7 +3,12 @@
 import { Button } from '@/components/ui/button';
 
 interface CategoryFilterProps {
-  categories: string[];
+  categories: [
+    {
+      id: number;
+      name: string;
+    }
+  ];
   activeCategory: string;
   onChange: (category: string) => void;
 }
@@ -14,9 +19,9 @@ export function CategoryFilter({ categories, activeCategory, onChange }: Categor
       <Button variant={activeCategory === 'all' ? 'default' : 'outline'} onClick={() => onChange('all')} className="whitespace-nowrap">
         Semua
       </Button>
-      {categories.map((category) => (
-        <Button key={category} variant={activeCategory === category ? 'default' : 'outline'} onClick={() => onChange(category)} className="whitespace-nowrap">
-          {category}
+      {categories?.map((category, index) => (
+        <Button key={index} variant={activeCategory === category?.name ? 'default' : 'outline'} onClick={() => onChange(category?.name)} className="whitespace-nowrap">
+          {category?.name}
         </Button>
       ))}
     </div>

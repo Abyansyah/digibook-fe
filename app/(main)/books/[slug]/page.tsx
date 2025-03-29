@@ -9,21 +9,16 @@ import { Reviews } from '@/components/pages/book/reviews';
 import Image from 'next/image';
 import { useBookStore } from '@/store/bookStore';
 import { useRouter } from 'next/navigation';
-import { readBook } from '@/services/bookApi';
+import { getRelateBook, readBook } from '@/services/bookApi';
 import { toast } from 'sonner';
 import { useAuthStore } from '@/store/authStore';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
-
-const relatedBooks = [
-  { id: 1, title: 'Manusia Setengah Salmon', author: 'Raditya Dika', coverUrl: 'https://image.gramedia.net/rs:fit:0:0/plain/https://cdn.gramedia.com/uploads/items/9789797808990_Koala-Kumal-Edisi-Revisi.jpg' },
-  { id: 2, title: 'Marmut Merah Jambu', author: 'Raditya Dika', coverUrl: 'https://image.gramedia.net/rs:fit:0:0/plain/https://cdn.gramedia.com/uploads/items/9789797808990_Koala-Kumal-Edisi-Revisi.jpg' },
-  { id: 3, title: 'Ubur-Ubur Lembur', author: 'Raditya Dika', coverUrl: 'https://image.gramedia.net/rs:fit:0:0/plain/https://cdn.gramedia.com/uploads/items/9789797808990_Koala-Kumal-Edisi-Revisi.jpg' },
-  { id: 4, title: 'Cinta Brontosaurus', author: 'Raditya Dika', coverUrl: 'https://image.gramedia.net/rs:fit:0:0/plain/https://cdn.gramedia.com/uploads/items/9789797808990_Koala-Kumal-Edisi-Revisi.jpg' },
-  { id: 5, title: 'Radikus Makankakus', author: 'Raditya Dika', coverUrl: 'https://image.gramedia.net/rs:fit:0:0/plain/https://cdn.gramedia.com/uploads/items/9789797808990_Koala-Kumal-Edisi-Revisi.jpg' },
-];
+import useSWR from 'swr';
+import { DescriptionBookModal } from '@/components/pages/book/description-book-modal';
 
 export default function BookDetail({ params }: { params: { slug: string } }) {
   const [isLiked, setIsLiked] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   const { bookDetail, bookReview, loading, loadingReview, fetchBookDetail, fetchBookReview } = useBookStore();
 
@@ -38,25 +33,25 @@ export default function BookDetail({ params }: { params: { slug: string } }) {
     }
   }, [params.slug, fetchBookDetail, fetchBookReview]);
 
+  const { data: relateBook } = useSWR([params.slug], getRelateBook);
+
   const router = useRouter();
 
   const handleReadBook = async () => {
     setLoadingRead(true);
     try {
       const res = await readBook(bookDetail?.slug, 1);
-      console.log(res);
       if (res.success) {
         setTimeout(() => {
           setLoadingRead(false);
           router.push(`/reading/${params.slug}`);
         }, 1000);
       }
-    } catch (error) {
-      console.log(error);
+    } catch {
       toast.error('Gagal membaca buku');
     }
   };
-
+  
   if (loading || loadingReview) {
     return (
       <div className="w-full h-screen flex justify-center items-center">
@@ -69,7 +64,7 @@ export default function BookDetail({ params }: { params: { slug: string } }) {
   }
   return (
     <div className="min-h-screen bg-gray-50">
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main data-testid="book-detail" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12">
           <div className="md:col-span-4 lg:col-span-3 flex justify-center md:justify-start">
             <div className="relative w-64">
@@ -109,7 +104,10 @@ export default function BookDetail({ params }: { params: { slug: string } }) {
 
             <div className="prose prose-gray max-w-none">
               <h3 className="text-lg font-semibold mb-2">Tentang Buku</h3>
-              <p className="text-gray-600">{bookDetail?.description}</p>
+              <p className="text-gray-600 line-clamp-6">{bookDetail?.description}</p>
+              <Button size={'sm'} onClick={() => setIsModalOpen(true)} className="px-0 h-0" variant={'link'}>
+                Baca Selengkapnya
+              </Button>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4">
@@ -121,13 +119,13 @@ export default function BookDetail({ params }: { params: { slug: string } }) {
                     router.push(`/reading/${params.slug}`);
                   }
                 }}
-                className="flex-1"
+                className="sm:flex-1 "
                 size="lg"
                 disabled={loadingRead}
               >
                 Baca Sekarang
               </Button>
-              <Button variant="outline" size="lg" className="flex-1">
+              <Button variant="outline" size="lg" className="sm:flex-1">
                 <Share2 className="w-5 h-5 mr-2" />
                 Bagikan
               </Button>
@@ -157,9 +155,10 @@ export default function BookDetail({ params }: { params: { slug: string } }) {
           </div>
         </div>
 
-        <RelatedBooks books={relatedBooks} />
+        <RelatedBooks books={relateBook?.data} />
         <Reviews reviews={bookReview || []} bookId={params.slug} />
       </main>
+      <DescriptionBookModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} description={bookDetail?.description} />
     </div>
   );
 }

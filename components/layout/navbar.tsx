@@ -9,7 +9,7 @@ import React, { useState } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ListMenu } from '@/constant/menu';
 import { MenuTypes } from '@/types/menu';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { NavbarProps } from '@/types/navbar';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuLabel, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
@@ -20,6 +20,17 @@ const Navbar: React.FC<NavbarProps> = ({ className }) => {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   // const [imageLoading, setImageLoading] = useState<boolean>(false);
   const { push } = useRouter();
+  const pathname = usePathname();
+
+  const normalizePath = (path: string | undefined) => {
+    return path ? path.replace(/\/$/, '') : '';
+  };
+
+  const currentPath = normalizePath(pathname);
+
+  const isActive = (href: string | undefined) => {
+    return currentPath === normalizePath(href);
+  };
 
   const toggleDropdown = (name: string) => {
     setOpenDropdown(openDropdown === name ? null : name);
@@ -42,7 +53,7 @@ const Navbar: React.FC<NavbarProps> = ({ className }) => {
               <li key={index} className="relative">
                 {item.dropdown ? (
                   <div>
-                    <button onClick={() => toggleDropdown(item.name)} className="flex items-center text-gray-700 hover:text-blue-600 focus:outline-none">
+                    <button onClick={() => toggleDropdown(item.name)} className={`flex items-center ${item.dropdown.some((subItem) => isActive(subItem.href)) ? 'text-blue-600' : 'text-gray-700'} hover:text-blue-600 focus:outline-none`}>
                       {item.name}
                       <svg className={`ml-1 h-4 w-4 transition-transform ${openDropdown === item.name ? 'rotate-180' : ''}`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                         <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
@@ -52,7 +63,13 @@ const Navbar: React.FC<NavbarProps> = ({ className }) => {
                       <div className="absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
                         <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
                           {item.dropdown.map((dropdownItem, dropdownIndex) => (
-                            <Link key={dropdownIndex} href={dropdownItem.href} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900" role="menuitem">
+                            <Link
+                              key={dropdownIndex}
+                              href={dropdownItem.href}
+                              className={`block px-4 py-2 text-sm ${isActive(dropdownItem.href) ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'}`}
+                              role="menuitem"
+                              onClick={() => setOpenDropdown(null)}
+                            >
                               {dropdownItem.name}
                             </Link>
                           ))}
@@ -61,7 +78,7 @@ const Navbar: React.FC<NavbarProps> = ({ className }) => {
                     )}
                   </div>
                 ) : (
-                  <Link href={item.href || '/'} className="text-gray-700 hover:text-blue-600">
+                  <Link href={item.href || '/'} className={`${isActive(item.href) ? 'text-blue-600' : 'text-gray-700'} hover:text-blue-600`}>
                     {item.name}
                   </Link>
                 )}
@@ -74,7 +91,7 @@ const Navbar: React.FC<NavbarProps> = ({ className }) => {
                 <DropdownMenu>
                   <DropdownMenuTrigger>
                     <Avatar>
-                      <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+                      <AvatarImage src={user?.foto || 'https://github.com/shadcn.png'} alt="@shadcn" />
                       <AvatarFallback>CN</AvatarFallback>
                     </Avatar>
                   </DropdownMenuTrigger>

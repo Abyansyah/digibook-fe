@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
+import useSWR from 'swr';
 import { Search, Filter } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
@@ -8,27 +9,55 @@ import { FilterContent } from './Filter';
 import { ViewToggle } from '@/components/pages/book/view-toogle';
 import { BookGrid } from '@/components/pages/book/book-grid';
 import { BookList } from '@/components/pages/book/book-list';
-import { updateURLParams } from '@/lib/url-params';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { fetchBooks } from '@/services/bookApi';
 import { Input } from '@/components/ui/input';
 import SkeletonCard from '@/components/loading-card';
-import { debounce } from '@/lib/utils';
 import LoadingSkeleton from '@/components/pages/book/loading-skeleton-list';
+import { debounce } from '@/lib/utils';
+
+export function updateURLParams(updates: Record<string, string>) {
+  const currentSearchParams = new URLSearchParams(window.location.search);
+  Object.entries(updates).forEach(([key, value]) => {
+    if (value) {
+      currentSearchParams.set(key, value);
+    } else {
+      currentSearchParams.delete(key);
+    }
+  });
+  return currentSearchParams.toString();
+}
 
 export default function BookStore() {
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const initialCategories = (searchParams.get('category') || '').split(',').filter(Boolean);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>(initialCategories);
+
+  useEffect(() => {
+    const categoryParam = searchParams.get('category') || '';
+    setSelectedCategories(categoryParam ? categoryParam.split(',') : []);
+  }, [searchParams]);
+
   const [isScrolled, setIsScrolled] = useState(false);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-  const [books, setBooks] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [totalPages, setTotalPages] = useState(1);
-
-  const searchParams = useSearchParams();
-  const router = useRouter();
-
   const [search, setSearch] = useState(searchParams.get('search') || '');
-  const currentPage = parseInt(searchParams.get('page') || '1', 10);
+
+  const searchTerm = searchParams.get('search') || '';
+  const book_category = searchParams.get('category') || '';
+  const page = parseInt(searchParams.get('page') || '1', 10);
+
+  const fetchBooksSWR = async (params: [string, string, string, number]) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [_key, search, book_category, page] = params;
+
+    const query = { search, book_category, page };
+
+    return await fetchBooks(query);
+  };
+
+  const { data, isLoading } = useSWR(['books', searchTerm, book_category, page], fetchBooksSWR);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -38,39 +67,18 @@ export default function BookStore() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const fetchBooksFromApi = async () => {
-    setLoading(true);
-
-    const query = {
-      search: searchParams.get('search') || '',
-      book_category: searchParams.get('category') || '',
-      page: parseInt(searchParams.get('page') || '1'),
-      limit: 12,
-    };
-
-    try {
-      const { data } = await fetchBooks(query);
-      setBooks(data?.list);
-      setTotalPages(data?.meta.total_pages);
-    } catch (error) {
-      console.error('Failed to fetch books:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const debouncedHandleFiltersChange = useMemo(
     () =>
       debounce((updates: Record<string, string>) => {
-        const queryString = updateURLParams(searchParams, updates);
+        const queryString = updateURLParams(updates);
         router.push(queryString ? `/books/?${queryString}` : '/books');
       }, 1000),
-    [searchParams, router]
+    [router]
   );
 
   const debouncedSetSearchTerm = useMemo(
     () =>
-      debounce((term) => {
+      debounce((term: string) => {
         setSearch(term);
       }, 1000),
     []
@@ -84,10 +92,9 @@ export default function BookStore() {
     debouncedHandleFiltersChange(updates);
   };
 
-  useMemo(() => {
-    fetchBooksFromApi();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams]);
+  const currentPage = page;
+  const totalPages = data?.data?.meta?.total_pages || 1;
+  const books = data?.data?.list || [];
 
   return (
     <div className="min-h-screen bg-white">
@@ -167,28 +174,18 @@ export default function BookStore() {
               </div>
             </div>
 
-            {loading && viewMode === 'grid' ? (
-              <>
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                  {Array.from({ length: 10 }, (_, i) => (
-                    <SkeletonCard key={i} />
-                  ))}
-                </div>
-              </>
-            ) : loading && viewMode === 'list' ? (
-              <>
+            {isLoading && viewMode === 'grid' ? (
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                 {Array.from({ length: 10 }, (_, i) => (
-                  <LoadingSkeleton key={i} />
+                  <SkeletonCard key={i} />
                 ))}
-              </>
+              </div>
+            ) : isLoading && viewMode === 'list' ? (
+              Array.from({ length: 10 }, (_, i) => <LoadingSkeleton key={i} />)
             ) : viewMode === 'grid' ? (
-              <>
-                <BookGrid books={books} />
-              </>
+              <BookGrid books={books} />
             ) : (
-              <>
-                <BookList books={books} />
-              </>
+              <BookList books={books} />
             )}
 
             <div className="flex justify-center items-center gap-2 mt-8">

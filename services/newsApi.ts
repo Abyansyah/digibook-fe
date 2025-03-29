@@ -23,3 +23,8 @@ export const detailNews = async (slug: string) => {
   const response = await authClient.get(`/news/${slug}`);
   return response.data?.data;
 };
+
+export const getNewsCategory = async () => {
+  const response = await authClient.post('/news/category');
+  return response.data?.data;
+};

@@ -20,9 +20,8 @@ export const ListMenu: MenuTypes[] = [
   {
     name: 'Edukasi & Publikasi',
     dropdown: [
-      { name: 'Pelaporan Hoaks', href: '/report' },
+      { name: 'Diskusi Forum', href: '/diskusi-forum' },
       { name: 'Penerbitan Buku', href: '/publish' },
-      { name: 'Tips Terbaru', href: '/tips' },
     ],
   },
 ];

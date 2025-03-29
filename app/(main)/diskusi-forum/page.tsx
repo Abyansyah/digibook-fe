@@ -4,46 +4,46 @@ import { Search, PlusCircle } from 'lucide-react';
 const topics = [
   {
     id: 1,
-    title: 'Getting started with Next.js',
-    author: 'John Doe',
-    replies: 15,
-    views: 230,
-    lastPost: '2 hours ago',
+    title: 'Pengantar Literasi Digital',
+    author: 'Andi Wijaya',
+    replies: 10,
+    views: 200,
+    lastPost: '2 jam yang lalu',
   },
   {
     id: 2,
-    title: 'Tailwind CSS best practices',
-    author: 'Jane Smith',
-    replies: 8,
-    views: 120,
-    lastPost: '5 hours ago',
+    title: 'Meningkatkan Kemampuan Membaca Kritis',
+    author: 'Siti Rahma',
+    replies: 7,
+    views: 150,
+    lastPost: '5 jam yang lalu',
   },
   {
     id: 3,
-    title: 'React Server Components explained',
-    author: 'Bob Johnson',
-    replies: 22,
-    views: 345,
-    lastPost: '1 day ago',
+    title: 'Pentingnya Literasi Keuangan Sejak Dini',
+    author: 'Budi Santoso',
+    replies: 12,
+    views: 300,
+    lastPost: '1 hari yang lalu',
   },
   {
     id: 4,
-    title: 'Optimizing performance in Next.js',
-    author: 'Alice Brown',
-    replies: 12,
+    title: 'Strategi Meningkatkan Minat Baca',
+    author: 'Dewi Kartika',
+    replies: 9,
     views: 180,
-    lastPost: '3 days ago',
+    lastPost: '3 hari yang lalu',
   },
 ];
 
-const categories = ['General', 'Next.js', 'React', 'Tailwind CSS', 'JavaScript', 'TypeScript'];
+const categories = ['Literasi Digital', 'Membaca', 'Menulis', 'Keuangan', 'Pendidikan', 'Budaya'];
 
 export default function ForumPage() {
   return (
     <div className="min-h-screen bg-gray-100">
       <header className="bg-white shadow">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <h1 className="text-3xl font-bold text-gray-900">Developer Forum</h1>
+          <h1 className="text-3xl font-bold text-gray-900">Forum Literasi</h1>
         </div>
       </header>
 
@@ -57,7 +57,7 @@ export default function ForumPage() {
               </div>
               <Link href="/diskusi-forum/new-topic" className="w-full sm:w-auto bg-blue-500 text-white px-4 py-2 rounded-lg flex items-center justify-center hover:bg-blue-600 transition duration-300">
                 <PlusCircle className="mr-2 h-5 w-5" />
-                New Topic
+                Topik Baru
               </Link>
             </div>
 
@@ -85,7 +85,7 @@ export default function ForumPage() {
           <div className="lg:w-1/4">
             <div className="bg-white shadow overflow-hidden sm:rounded-lg">
               <div className="px-4 py-5 sm:px-6">
-                <h2 className="text-lg font-medium text-gray-900">Categories</h2>
+                <h2 className="text-lg font-medium text-gray-900">Kategori</h2>
               </div>
               <ul className="divide-y divide-gray-200">
                 {categories.map((category) => (

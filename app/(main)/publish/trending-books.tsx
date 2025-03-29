@@ -5,23 +5,23 @@ import PublishHero from '@/public/images/publish-hero.jpg';
 
 const trendingBooks = [
   {
-    title: 'Kisah Anak Pelangi',
-    author: 'Mira Lesmana',
-    image: PublishHero,
+    title: 'Laskar Pelangi',
+    author: 'Andrea Hirata',
+    image: 'https://upload.wikimedia.org/wikipedia/id/8/8e/Laskar_pelangi_sampul.jpg',
     rating: 4.5,
     readers: 15000,
   },
   {
-    title: 'Bumi Manusia Digital',
-    author: 'Pramoedya Ananta Toer Jr.',
-    image: PublishHero,
+    title: 'Ubur-Ubur Lembur',
+    author: 'Raditya Dika',
+    image: 'https://upload.wikimedia.org/wikipedia/id/thumb/8/8f/Ubur-ubur-Lembur1.jpg/220px-Ubur-ubur-Lembur1.jpg',
     rating: 4.7,
     readers: 20000,
   },
   {
-    title: 'Laskar Algoritma',
-    author: 'Andrea Hirata',
-    image: PublishHero,
+    title: 'Hargai Diri Sendiri dan Berhentilah Tersakiti',
+    author: 'YOO EUN JUNG',
+    image: 'https://cdn.gramedia.com/uploads/items/Hargai_Diri_Sendiri_dan_Berhentilah_Tersakiti_C_1_4_page-0001.jpg',
     rating: 4.6,
     readers: 18000,
   },

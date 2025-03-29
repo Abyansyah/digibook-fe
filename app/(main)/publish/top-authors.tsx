@@ -5,15 +5,14 @@ import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { Star, Book } from 'lucide-react';
-import SampleIMG from '@/public/images/sample-comment.jpg'
 
 const topAuthors = [
-  { name: 'Tere Liye', rating: 4.9, image: SampleIMG, publishedBooks: 25 },
-  { name: 'Eka Kurniawan', rating: 4.8, image: SampleIMG, publishedBooks: 18 },
-  { name: 'Dee Lestari', rating: 4.7, image: SampleIMG, publishedBooks: 22 },
-  { name: 'Leila S. Chudori', rating: 4.6, image: SampleIMG, publishedBooks: 15 },
-  { name: 'Andrea Hirata', rating: 4.8, image: SampleIMG, publishedBooks: 20 },
-  { name: 'Faisal Oddang', rating: 4.5, image: SampleIMG, publishedBooks: 12 },
+  { name: 'Tere Liye', rating: 4.9, image: 'https://idwriters.com/wp-content/uploads/2018/06/tl01.png', publishedBooks: 25 },
+  { name: 'Ahmad Fuadi', rating: 4.8, image: 'https://cdn.gramedia.com/uploads/authors/Fuadi-twitter_GlGjsA7.jpg', publishedBooks: 18 },
+  { name: 'Dee Lestari', rating: 4.7, image: 'https://bukunesia.com/wp-content/uploads/2023/07/Biografi-Dee-Lestari.jpeg', publishedBooks: 22 },
+  { name: 'Nadhifa Allya Tsana', rating: 4.6, image: 'https://thephrase.s3.ap-southeast-1.amazonaws.com/2022/03/83132866_115212303223821_7707403240727104436_n.jpg', publishedBooks: 15 },
+  { name: 'Andrea Hirata', rating: 4.8, image: 'https://cdn.gramedia.com/uploads/authors/hirata_-_mr_andrea_hirata_-_photo_from_him_27march15.jpg', publishedBooks: 20 },
+  { name: 'Raditya Dika', rating: 4.5, image: 'https://qubisastorage.blob.core.windows.net/files/profiles/17060/img300/17060-20210317104052321.jpg', publishedBooks: 12 },
 ];
 
 export default function TopAuthors() {

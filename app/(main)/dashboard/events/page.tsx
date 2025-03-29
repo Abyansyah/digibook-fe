@@ -8,6 +8,7 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { BASE_URL, fetcher } from '@/services/authClient';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 interface Event {
   id: number;
@@ -57,7 +58,20 @@ export default function EventsPage() {
           </TabsTrigger>
         </TabsList>
 
-        <div className="grid gap-6">{!data ? Array.from({ length: 3 }).map((_, index) => <SkeletonCard key={index} />) : filteredEvents.map((event) => <EventCard key={event.id} event={event} />)}</div>
+        {filteredEvents.length > 0 ? (
+          <div className="grid gap-6">{!data ? Array.from({ length: 3 }).map((_, index) => <SkeletonCard key={index} />) : filteredEvents.map((event) => <EventCard key={event.id} event={event} />)}</div>
+        ) : (
+          <div className="flex justify-center ">
+            <div className="flex flex-col items-center justify-center">
+              <iframe className="w-60 h-60 mb-6" src="https://lottie.host/embed/25b433c0-c82b-4fa7-a51e-f63826a954e4/HEEbrJ7g7z.lottie"></iframe>
+              <h2 className="font-semibold text-xl text-center">Wahh, kamu belum mengikuti event sama sekali nih!!</h2>
+              <p className="mb-6">Yuk ikutin event dan dapatkan poin!</p>
+              <Link href={'/event'}>
+                <Button>Ikut Event Sekarang!</Button>
+              </Link>
+            </div>
+          </div>
+        )}
       </Tabs>
     </div>
   );

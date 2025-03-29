@@ -51,7 +51,22 @@ export default function ReadingHistoryPage() {
         </TabsList>
       </Tabs>
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">{!data ? Array.from({ length: 3 }).map((_, index) => <SkeletonCard key={index} />) : books.map((book) => <BookCard key={book.id} book={book} />)}</div>
+      {books.length > 0 ? (
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">{!data ? Array.from({ length: 3 }).map((_, index) => <SkeletonCard key={index} />) : books.map((book) => <BookCard key={book.id} book={book} />)}</div>
+      ) : (
+        <div className="flex justify-center ">
+          <div className="flex flex-col items-center justify-center">
+            <iframe className="w-60 h-60 mb-6" src="https://lottie.host/embed/25b433c0-c82b-4fa7-a51e-f63826a954e4/HEEbrJ7g7z.lottie"></iframe>
+            <h2 className="font-semibold text-xl text-center">Wahh, {filter === 'completed' ? 'kamu belum ada buku yang selesai' : 'kamu belum membaca buku'} sama sekali nih!!</h2>
+            <p className="mb-6">Yuk {filter === 'completed' ? 'Yuk Selesaikan buku sekarang dan dapatkan poin' : 'Baca buku sekarang dan dapatkan poin'} poin!</p>
+            {filter === 'all' && (
+              <Link href={'/event'}>
+                <Button>Ikut Event Sekarang!</Button>
+              </Link>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

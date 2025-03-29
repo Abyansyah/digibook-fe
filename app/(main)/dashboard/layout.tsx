@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { usePathname } from 'next/navigation';
 import MobileNavbar from '@/components/layout/mobile-navbar';
+import { useAuthStore } from '@/store/authStore';
 
 const navigation = [
   {
@@ -74,13 +75,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 }
 
 function Sidebar() {
+  const { user } = useAuthStore();
   return (
     <>
       <div className="flex flex-col items-center mb-6">
         <div className="relative w-20 h-20 mb-3">
-          <Image src="https://github.com/shadcn.png" alt="Profile" width={80} height={80} className="rounded-full" />
+          <Image src={user?.foto || 'https://github.com/shadcn.png'} alt="Profile" width={80} height={80} className="rounded-full object-cover" />
         </div>
-        <h2 className="text-lg font-semibold">John Doe</h2>
+        <h2 className="text-lg font-semibold">{user?.name}</h2>
         <p className="text-sm text-gray-500">Reader & Author</p>
       </div>
 

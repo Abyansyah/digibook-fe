@@ -1,8 +1,14 @@
-import React from 'react';
+import { Suspense } from 'react';
 import BookPage from './booksPage';
 
 const Books = () => {
-  return <BookPage />;
+  return (
+    <>
+      <Suspense>
+        <BookPage />
+      </Suspense>
+    </>
+  );
 };
 
 export default Books;

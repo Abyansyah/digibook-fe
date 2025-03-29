@@ -4,12 +4,15 @@ import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
+import Link from 'next/link';
 
 interface Book {
   id: number;
   title: string;
   author: string;
-  coverUrl: string;
+  image: string;
+  slug: string;
 }
 
 export function RelatedBooks({ books }: { books: Book[] }) {
@@ -21,12 +24,12 @@ export function RelatedBooks({ books }: { books: Book[] }) {
 
   useEffect(() => {
     setIsAtStart(startIndex === 0);
-    setIsAtEnd(startIndex + visibleBooks >= books.length);
-  }, [startIndex, books.length]);
+    setIsAtEnd(startIndex + visibleBooks >= books?.length);
+  }, [startIndex, books?.length]);
 
   const nextSlide = () => {
     if (!isAtEnd) {
-      setStartIndex((prevIndex) => Math.min(prevIndex + 1, books.length - visibleBooks));
+      setStartIndex((prevIndex) => Math.min(prevIndex + 1, books?.length - visibleBooks));
     }
   };
 
@@ -51,15 +54,26 @@ export function RelatedBooks({ books }: { books: Book[] }) {
       </div>
       <div className="overflow-hidden">
         <div className="flex transition-transform duration-300 ease-in-out" style={{ transform: `translateX(-${startIndex * 25}%)` }}>
-          {books.map((book) => (
-            <div key={book.id} className="flex-none w-1/4 px-2">
+          {books?.map((book) => (
+            <Link href={`/books/${book.slug}`} key={book.id} className="flex-none w-1/4 px-2">
               <div className="relative aspect-[3/4] mb-3">
-                <Image src={book.coverUrl || '/placeholder.svg'} fill alt={book.title} className="rounded-lg object-cover w-full h-full" />
+                <Image src={book.image} fill alt={book.title} sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" className="rounded-lg object-cover w-full h-full" />
               </div>
               <h3 className="font-semibold mb-1 truncate">{book.title}</h3>
               <p className="text-sm text-gray-600">{book.author}</p>
-            </div>
+            </Link>
           ))}
+          {books?.length === 0 && (
+            <div className="w-full flex flex-col justify-center items-center">
+              <DotLottieReact className="w-[40%]" src="https://lottie.host/085856a8-02a9-431b-82e2-8b82260f854f/hXwlbdL3If.lottie" loop autoplay />
+              <p className="text-gray-600 text-center">Tidak ada buku terkait</p>
+              {/* <Link href={`/books/${bookId}/reviews`}>
+                <Button variant="outline" className=" mt-4">
+                  Buat Ulasan
+                </Button>
+              </Link> */}
+            </div>
+          )}
         </div>
       </div>
     </section>

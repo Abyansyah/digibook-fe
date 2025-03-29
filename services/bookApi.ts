@@ -55,3 +55,21 @@ export const postComment = async (slug: string, comment: string, rating: number)
     throw error;
   }
 };
+
+export const getCategories = async () => {
+  try {
+    const response = await authClient.get('/book-categories');
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getRelateBook = async (slug: string) => {
+  try {
+    const response = await authClient.get(`/books/${slug}/related`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};

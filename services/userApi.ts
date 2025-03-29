@@ -1,4 +1,3 @@
-import { UserForm } from '@/types/user';
 import authClient from './authClient';
 
 export const fetchUser = async () => {
@@ -6,7 +5,11 @@ export const fetchUser = async () => {
   return response.data;
 };
 
-export const updateUser = async (data: UserForm) => {
-  const response = await authClient.put('/users', data);
+export const updateUser = async (payload: FormData) => {
+  const response = await authClient.post('/users', payload, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
   return response.data;
 };

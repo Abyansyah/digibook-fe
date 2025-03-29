@@ -61,7 +61,7 @@ const LeaderboardSection: React.FC = () => {
                 <p>{index + 4}</p>
                 <Crown className="w-6 h-6 text-purple-500" />
                 <Avatar className="w-12 h-12">
-                  <AvatarImage src={participant.image} alt={participant.name} />
+                  <AvatarImage src={participant.image} alt={participant.name} className="object-center" />
                   <AvatarFallback>{participant.name[0]}</AvatarFallback>
                 </Avatar>
                 <div>

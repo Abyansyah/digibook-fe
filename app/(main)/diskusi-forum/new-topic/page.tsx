@@ -18,16 +18,14 @@ export default function NewTopicPage() {
   };
 
   const formats = ['header', 'bold', 'italic', 'underline', 'strike', 'blockquote', 'list', 'bullet', 'indent', 'link', 'image'];
-
-  console.log(content);
-  
+  const categories = ['Literasi Digital', 'Membaca', 'Menulis', 'Keuangan', 'Pendidikan', 'Budaya'];
 
   return (
     <div className="min-h-screen bg-gray-100">
       <header className="bg-white shadow">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center">
-            <Link href="/" className="text-blue-500 hover:text-blue-600 flex items-center">
+            <Link href="/diskusi-forum" className="text-blue-500 hover:text-blue-600 flex items-center">
               <ArrowLeft className="h-5 w-5 mr-2" />
               Back to Forum
             </Link>
@@ -41,13 +39,13 @@ export default function NewTopicPage() {
           <form action="">
             <div className="mb-4">
               <label htmlFor="title" className="block text-sm font-medium text-gray-700">
-                Title
+                Judul
               </label>
               <Input type="text" id="title" className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="Enter your topic title" />
             </div>
             <div className="mb-4">
               <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-2">
-                Category
+                Kategori
               </label>
               <Select>
                 <SelectTrigger className="">
@@ -56,23 +54,21 @@ export default function NewTopicPage() {
                 <SelectContent>
                   <SelectGroup>
                     <SelectLabel>Topik</SelectLabel>
-                    <SelectItem value="apple">Apple</SelectItem>
-                    <SelectItem value="banana">Banana</SelectItem>
-                    <SelectItem value="blueberry">Blueberry</SelectItem>
-                    <SelectItem value="grapes">Grapes</SelectItem>
-                    <SelectItem value="pineapple">Pineapple</SelectItem>
+                   {categories.map((category) => (
+                      <SelectItem key={category} value={category}>{category}</SelectItem>
+                    ))}
                   </SelectGroup>
                 </SelectContent>
               </Select>
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-2">Content</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Konten</label>
               <ReactQuill theme="snow" value={content} onChange={setContent} modules={modules} formats={formats} className="h-64 mb-12" />
             </div>
-            <div className="flex justify-end">
+            <div className="flex justify-end mt-2">
               <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded-lg flex items-center justify-center hover:bg-blue-600 transition duration-300">
                 <Send className="mr-2 h-5 w-5" />
-                Post Topic
+                Tambah Topik
               </button>
             </div>
           </form>

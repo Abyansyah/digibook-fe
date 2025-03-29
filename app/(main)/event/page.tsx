@@ -109,7 +109,15 @@ function ProgramListing() {
                     <ProgramCard key={program.id} {...program} />
                   ))}
                 </div>
-                {events.length === 0 && <div className="text-center py-12 text-gray-500">Tidak ada program yang ditemukan</div>}
+                {events.length === 0 && (
+                  <div className="flex justify-center items-center">
+                    <div className="flex flex-col items-center justify-center">
+                      <iframe className="w-60 h-60 mb-6" src="https://lottie.host/embed/25b433c0-c82b-4fa7-a51e-f63826a954e4/HEEbrJ7g7z.lottie"></iframe>
+                      <h2 className="font-semibold text-xl text-center">Yahh tidak ada jenis event yang kamu cari nih!</h2>
+                      <p className="mb-6">Coba cari event yang lain pada tab semua program</p>
+                    </div>
+                  </div>
+                )}
               </TabsContent>
             ))
           )}
@@ -121,7 +129,16 @@ function ProgramListing() {
 
 export default function ProgramListingWrapper() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense
+      fallback={
+        <div className="w-full h-screen flex justify-center items-center">
+          <div className="flex flex-col justify-center items-center">
+            <iframe src="https://lottie.host/embed/0d53fecd-f5f5-4f67-a651-b33f93d434cc/pT97OQp5TH.lottie"></iframe>
+            <p className="text-xl">Memuat buku...</p>
+          </div>
+        </div>
+      }
+    >
       <ProgramListing />
     </Suspense>
   );

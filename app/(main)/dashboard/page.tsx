@@ -111,6 +111,7 @@ interface RecentBooksProps {
 }
 
 function RecentBooks({ books }: RecentBooksProps) {
+  const { push } = useRouter();
   return (
     <Card>
       <CardHeader>
@@ -118,17 +119,28 @@ function RecentBooks({ books }: RecentBooksProps) {
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-          {books?.data?.map((book, index) => (
-            <div key={index} className="space-y-2">
-              <div className="flex justify-between">
-                <p className="font-medium">{book.title}</p>
-                <span className="text-sm text-gray-500">{parseFloat(book.presentase)}%</span>
+          {books?.data?.length > 0 ? (
+            books?.data?.map((book, index) => (
+              <div key={index} className="space-y-2">
+                <div className="flex justify-between">
+                  <p className="font-medium">{book.title}</p>
+                  <span className="text-sm text-gray-500">{parseFloat(book.presentase)}%</span>
+                </div>
+                <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                  <div className="h-full bg-blue-500 transition-all duration-300" style={{ width: `${parseFloat(book.presentase)}%` }} />
+                </div>
               </div>
-              <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                <div className="h-full bg-blue-500 transition-all duration-300" style={{ width: `${parseFloat(book.presentase)}%` }} />
+            ))
+          ) : (
+            <div className="flex justify-center ">
+              <div className="flex flex-col items-center justify-center">
+                <iframe className="w-60 h-60 mb-6" src="https://lottie.host/embed/25b433c0-c82b-4fa7-a51e-f63826a954e4/HEEbrJ7g7z.lottie"></iframe>
+                <h2 className="font-semibold text-xl text-center">Wahh, kamu belum membaca buku sama sekali nih!!</h2>
+                <p className="mb-6">Yuk Baca buku sekarang dan dapatkan poin!</p>
+                <Button onClick={() => push('/books')}>Ikut Event Sekarang!</Button>
               </div>
             </div>
-          ))}
+          )}
         </div>
       </CardContent>
     </Card>

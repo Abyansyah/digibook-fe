@@ -4,13 +4,23 @@ import { BookPlus, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import Link from 'next/link';
+import useSWR from 'swr';
+import { getAllPublish } from '@/services/publishApi';
+import { PublishedBookCardSkeleton } from './publish-book-loading-card';
+import { PublishedBookCard } from './publish-book-card';
 
-const publishedBooks = [
-  // Add published books here if any
-];
-
+type book = {
+  id: number;
+  title: string;
+  author: string;
+  image: string;
+  publishDate: string;
+  page_count: number;
+  salesCount: number;
+  status: string;
+};
 export default function PublishingPage() {
-  const hasPublishedBooks = publishedBooks.length > 0;
+  const { data, isLoading } = useSWR('get-all-publish', getAllPublish);
 
   return (
     <div className="space-y-8">
@@ -21,7 +31,19 @@ export default function PublishingPage() {
         </Button>
       </div>
 
-      {!hasPublishedBooks ? (
+      {isLoading ? (
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {[...Array(3)].map((_, index) => (
+            <PublishedBookCardSkeleton key={index} />
+          ))}
+        </div>
+      ) : data?.data?.length > 0 ? (
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {data?.data?.map((book: book) => (
+            <PublishedBookCard key={book.id} book={book} />
+          ))}
+        </div>
+      ) : (
         <Card className="bg-gradient-to-br from-blue-50 to-indigo-50 border-none">
           <CardContent className="flex flex-col items-center text-center p-12">
             <BookPlus className="h-16 w-16 text-blue-500 mb-4" />
@@ -35,15 +57,7 @@ export default function PublishingPage() {
             </Button>
           </CardContent>
         </Card>
-      ) : (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {/* {publishedBooks.map((book) => (
-            <BookCard key={book.id} book={book} />
-          ))} */}
-        </div>
       )}
     </div>
   );
 }
-
-// ... BookCard component (if any) remains the same

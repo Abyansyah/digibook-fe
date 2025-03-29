@@ -26,8 +26,7 @@ export const useNewsStore = create<NewsState>((set) => ({
     try {
       const { list } = await fetchNews(params);
       set({ news: list, loading: false });
-    } catch (error) {
-      console.error('Error fetching news:', error);
+    } catch {
       set({ loading: false });
     }
   },
@@ -36,8 +35,7 @@ export const useNewsStore = create<NewsState>((set) => ({
     try {
       const { list } = await fetchNewsBanner();
       set({ newsBanner: list, loadingBanner: false });
-    } catch (error) {
-      console.error('Error fetching news:', error);
+    } catch {
       set({ loadingBanner: false });
     }
   },
@@ -46,8 +44,7 @@ export const useNewsStore = create<NewsState>((set) => ({
     try {
       const detail = await detailNews(slug);
       set({ newsDetail: detail, loadingDetail: false });
-    } catch (error) {
-      console.error('Error fetching news detail:', error);
+    } catch {
       set({ loadingDetail: false });
     }
   },
